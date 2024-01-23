@@ -6,7 +6,7 @@ import config
 import model
 import orm
 import repository
-import services
+import allocation.service_layer.services as services
 
 
 orm.start_mappers()

@@ -1,7 +1,35 @@
 import pytest
 import model
 import repository
-import services
+import allocation.service_layer.services as services
+
+from allocation.service_layer import unit_of_work
+
+
+class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
+    def __init__(self):
+        self.batches = FakeRepository([])  #(1)
+        self.committed = False  #(2)
+
+    def commit(self):
+        self.committed = True  #(2)
+
+    def rollback(self):
+        pass
+
+
+def test_add_batch():
+    uow = FakeUnitOfWork()  #(3)
+    services.add_batch("b1", "CRUNCHY-ARMCHAIR", 100, None, uow)  #(3)
+    assert uow.batches.get("b1") is not None
+    assert uow.committed
+
+
+def test_allocate_returns_allocation():
+    uow = FakeUnitOfWork()  #(3)
+    services.add_batch("batch1", "COMPLICATED-LAMP", 100, None, uow)  #(3)
+    result = services.allocate("o1", "COMPLICATED-LAMP", 10, uow)  #(3)
+    assert result == "batch1"
 
 
 class FakeRepository(repository.AbstractRepository):
