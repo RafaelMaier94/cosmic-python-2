@@ -3,7 +3,7 @@ from allocation.adapters import repository
 from allocation.service_layer import services, unit_of_work
 
 
-class FakeRepository(repository.AbstractRepository):
+class FakeRepository(repository.AbstractProductRepository):
     def __init__(self, batches):
         self._batches = set(batches)
 
